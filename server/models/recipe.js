@@ -10,7 +10,8 @@ const RecipeSchema = new Schema({
         trim: true
     },
     summary: {
-        type: String
+        type: String,
+        default: null
     },
     cookingStep: {
         type: String,
