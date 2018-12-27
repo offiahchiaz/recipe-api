@@ -10,7 +10,10 @@ app.use(bodyParser.json());
 
 app.post('/recipes', (req, res) => {
     let recipe = new Recipe({
-        title: req.body.title
+        title: req.body.title,
+        summary: req.body.summary,
+        cookingStep: req.body.cookingStep,
+        ingredient: req.body.ingredient
     });
 
     recipe.save().then((doc) => {
@@ -23,3 +26,5 @@ app.post('/recipes', (req, res) => {
 app.listen(5000, () => {
     console.log('Server running on port 5000');
 });
+
+module.exports = {app};
