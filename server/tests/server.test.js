@@ -5,9 +5,17 @@ const {app} = require('./../server');
 const Recipe = require('./../models/recipe');
 
 // Testing lifecycle method
+const recipes = [{
+    title: 'Banga soup'
+}, {
+    title: 'Afang soup'
+}];
+
 beforeEach((done) => {
-    Recipe.deleteMany({}).then(() => done());
-})
+    Recipe.deleteMany({}).then(() => {
+        Recipe.insertMany(recipes);
+    }).then(() => done());
+});
 
 describe('POST /recipes', () => {
     it('should create a new recipe', (done) => {
@@ -25,7 +33,7 @@ describe('POST /recipes', () => {
                     return done(err);
                 } 
 
-                Recipe.find().then((recipes) => {
+                Recipe.find({title}).then((recipes) => {
                     expect(recipes.length).toBe(1);
                     expect(recipes[0].title).toBe(title);
                     done();
@@ -44,9 +52,21 @@ describe('POST /recipes', () => {
                 }
 
                 Recipe.find().then((recipes) => {
-                    expect(recipes.length).toBe(0);
+                    expect(recipes.length).toBe(2);
                     done();
                 }).catch((e) => done(e));
             });
     });
 }); 
+
+describe('GET /recipes', () => {
+    it('should get all recipes', (done) => {
+        request(app)
+            .get('/recipes')
+            .expect(200)
+            .expect((res) => {
+                expect(res.body.recipes.length).toBe(2)
+            })
+            .end(done);
+    });
+});
