@@ -23,6 +23,14 @@ app.post('/recipes', (req, res) => {
     });
 });
 
+app.get('/recipes', (req, res) => {
+    Recipe.find().then((recipes) => {
+        res.send({recipes});
+    }, (e) => {
+        res.status(400).send(e);
+    });
+});
+
 app.listen(5000, () => {
     console.log('Server running on port 5000');
 });
