@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const {ObjectID} = require('mongodb');
 
 const {mongoose} = require('./db/mongoose');
 const Recipe = require('./models/recipe');
@@ -28,6 +29,22 @@ app.get('/recipes', (req, res) => {
         res.send({recipes});
     }, (e) => {
         res.status(400).send(e);
+    });
+});
+
+app.get('/recipes/:id', (req, res) => {
+    let id = req.params.id;
+    if (!ObjectID.isValid(id)) {
+        return res.status(404).send();
+    }
+
+    Recipe.findById(id).then((recipe) => {
+        if (!recipe) {
+            return res.status(404).send();
+        }
+        res.send({recipe});
+    }).catch((e) => {
+        res.status(400).send();
     });
 });
 
