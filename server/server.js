@@ -49,6 +49,22 @@ app.get('/recipes/:id', (req, res) => {
     });
 });
 
+app.delete('/recipes/:id', (req, res) => {
+    let id = req.params.id;
+    if (!ObjectID.isValid(id)) {
+        return res.status(404).send();
+    }
+
+    Recipe.findByIdAndRemove(id).then((recipe) => {
+        if (!recipe) {
+            return res.status(404).send();
+        }
+        res.send(recipe);
+    }).catch((e) => {
+        res.status(400).send();
+    });
+});
+
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
