@@ -59,7 +59,7 @@ app.delete('/recipes/:id', (req, res) => {
         if (!recipe) {
             return res.status(404).send();
         }
-        res.send(recipe);
+        res.send({recipe});
     }).catch((e) => {
         res.status(400).send();
     });

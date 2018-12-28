@@ -80,7 +80,7 @@ describe('GET /recipes/:id', () => {
             .get(`/recipes/${recipes[0]._id.toHexString()}`)
             .expect(200)
             .expect((res) => {
-                expect(res.body.recipe.text).toBe(recipes[0].title);
+                expect(res.body.recipe.title).toBe(recipes[0].title);
             })
             .end(done);
     });
@@ -101,3 +101,44 @@ describe('GET /recipes/:id', () => {
             end(done);
     });
 });
+
+describe('DELETE /recipes/:id', () => {
+    it('should remove a recipe', (done) => {
+        let hexId = recipes[1].title.toHexString();
+
+        request(app)
+            .delete(`/recipes/${hexId}`)
+            .expect(200)
+            .expect((res) => {
+                expect(res.body.recipe._id).toBe(hexId);
+            })
+            .end((err, res) => {
+                if (err) {
+                    return done(err);
+                }
+
+                Recipe.findByIdAndRemove(hexId).then((recipe) => {
+                    expect(recipe).toBeFalsy();
+                    done();
+                }).catch((e) => {
+                    return done(e);
+                });
+            });
+    });
+
+    it('should return 404 if recipe not found', (done) => {
+        let hexId = new ObjectID().toHexString();
+
+        request(app)
+            .delete(`/recipes/${hexId}`)
+            .expect(404)
+            end(done);
+    });
+
+    it('should return 404 for non-object ids', (done) => {
+        request(app)
+            .delete('/recipes/wxyz456')
+            .expect(404)
+            end(done);
+    });
+})
