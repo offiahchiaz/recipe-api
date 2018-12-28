@@ -1,13 +1,16 @@
 const expect = require('expect');
 const request = require('supertest');
+const {ObjectID} = require('mongodb');
 
 const {app} = require('./../server');
 const Recipe = require('./../models/recipe');
 
 // Testing lifecycle method
 const recipes = [{
+    _id: new ObjectID(),
     title: 'Banga soup'
 }, {
+    _id: new ObjectID(),
     title: 'Afang soup'
 }];
 
@@ -68,5 +71,33 @@ describe('GET /recipes', () => {
                 expect(res.body.recipes.length).toBe(2)
             })
             .end(done);
+    });
+});
+
+describe('GET /recipes/:id', () => {
+    it('should return recipe doc', (done) => {
+        request(app)
+            .get(`/recipes/${recipes[0]._id.toHexString()}`)
+            .expect(200)
+            .expect((res) => {
+                expect(res.body.recipe.text).toBe(recipes[0].title);
+            })
+            .end(done);
+    });
+
+    it('should return a 404 if recipe not found', (done) => {
+        let hexId = new ObjectID().toHexString();
+
+        request(app)
+            .get(`/recipes/${hexId}`)
+            .expect(404)
+            end(done);
+    });
+
+    it('should return a 404 for non-object ids', (done) => {
+        request(app)
+            .get('/recipes/wxyz456')
+            .expect(404)
+            end(done);
     });
 });
