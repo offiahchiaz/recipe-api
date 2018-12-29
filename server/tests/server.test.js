@@ -91,14 +91,14 @@ describe('GET /recipes/:id', () => {
         request(app)
             .get(`/recipes/${hexId}`)
             .expect(404)
-            end(done);
+            .end(done);
     });
 
     it('should return a 404 for non-object ids', (done) => {
         request(app)
             .get('/recipes/wxyz456')
             .expect(404)
-            end(done);
+            .end(done);
     });
 });
 
@@ -132,13 +132,13 @@ describe('DELETE /recipes/:id', () => {
         request(app)
             .delete(`/recipes/${hexId}`)
             .expect(404)
-            end(done);
+            .end(done);
     });
 
     it('should return 404 for non-object ids', (done) => {
         request(app)
             .delete('/recipes/wxyz456')
             .expect(404)
-            end(done);
+            .end(done);
     });
 })
